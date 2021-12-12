@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="css/style.css">
+<title>公開目安箱</title>
+</head>
+<body>
+
+<!-- コンテンツ表示画面 -->
+<h1><img src="imgs/meyasubako.jfif" alt="目安箱"></h1>
+
+<div class="card">
+    <p>容疑者</p>
+    <input type="text" id="uname">
+    <p>告発内容</p>
+    <textarea name="" id="text" cols="30" rows="10"></textarea>
+    <div class="button_koku">
+        <button id="send">告発する</button>
+    </div>
+    <div class="button_saku">
+        <button id='delete'>1つ削除</button>
+        <button id="alldelete">全て削除</button>
+    </div>
+</div>
+
+<div>
+<h2>容疑一覧</h2>
+<div id="output"></div>
+<div>
+
+
+<!--/ コンテンツ表示画面 -->
+
+<!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- JQuery -->
+
+
+<!--** 以下Firebase **-->
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+    import { getDatabase, ref, push, set, onChildAdded, remove, onChildRemoved }
+        from "https://cdnjs.cloudflare.com/ajax/libs/firebase/9.6.0/firebase-database.min.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "",
+      authDomain: "gsapp-a9eb9.firebaseapp.com",
+      projectId: "gsapp-a9eb9",
+      storageBucket: "gsapp-a9eb9.appspot.com",
+      messagingSenderId: "956423426888",
+      appId: "1:956423426888:web:d09d6061616486285d197d"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app); // RealtimeDBに接続
+    const dbRef = ref(db, "chat"); // RealtimeDB内の"chat"を使う
+
+    $("#send").on("click", function () {
+        const msg = {
+            uname: $("#uname").val(),
+            text: $("#text").val()
+        }
+        const newPostRef = push(dbRef); // pushできる状態にする
+        set(newPostRef, msg); // DBに値を送信
+    });
+
+    $("#delete").on("click", function(){
+       $("#listname").remove();
+       $("#listtext").remove();
+    });
+
+    $("#alldelete").on("click", function(){
+       $(".list").remove();
+    });
+
+    onChildAdded(dbRef, function (data) {
+        const msg = data.val();
+        // const key = data.key;
+        let h = 
+        `<div class='list'>
+            <table>
+            <tr>
+                <td id="listname">${msg.uname}</td>
+                <td id="listtext">${msg.text}</td>
+            </tr>
+            </table>
+        <div>`;
+        $("#output").append(h); // #output の最後に追加
+    });
+
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
